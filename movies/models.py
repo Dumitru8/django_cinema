@@ -57,13 +57,13 @@ class Movie(models.Model):
     budget = models.PositiveIntegerField('Budget', default=0, help_text='enter the amount in dollars')
     fees_in_usa = models.PositiveIntegerField(
         'Fees in US', default=0, help_text='enter the amount in dollars'
-        )
+    )
     fees_in_world = models.PositiveIntegerField(
         'Fees in world', default=0, help_text='enter the amount in dollars'
-        )
+    )
     category = models.ForeignKey(
         Category, verbose_name='Category', on_delete=models.SET_NULL, null=True
-        )
+    )
     url = models.SlugField(max_length=160, unique=True)
     draft = models.BooleanField('Draft', default=False)
 
@@ -71,7 +71,8 @@ class Movie(models.Model):
         return f'{self.title}'
 
     def get_absolute_url(self):
-        return reverse('movie_details', kwargs={'slug': self.url})
+        return reverse('movie_detail', kwargs={'slug': self.url})
+
     class Meta:
         verbose_name = 'Movie'
         verbose_name_plural = 'Movies'
@@ -85,7 +86,7 @@ class MovieShots(models.Model):
 
     def __str__(self):
         return f'{self.title}'
-    
+
     class Meta:
         verbose_name = 'Movie Shots'
         verbose_name_plural = 'Movie Shots'
@@ -97,7 +98,7 @@ class RatingStar(models.Model):
 
     def __str__(self):
         return f'{self.value}'
-    
+
     class Meta:
         verbose_name = 'Rating Star'
         verbose_name_plural = 'Rating Stars'
@@ -111,7 +112,7 @@ class Rating(models.Model):
 
     def __str__(self):
         return f'{self.star} - {self.movie}'
-    
+
     class Meta:
         verbose_name = 'Rating'
         verbose_name_plural = 'Ratings'
@@ -127,10 +128,7 @@ class Reviews(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.movie}'
-    
+
     class Meta:
         verbose_name = 'Reviews'
         verbose_name_plural = 'Reviews'
-
-
-
