@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import View
 from .forms import ReviewForm, RatingForm
-from .models import Movie, Category, Actor, Genre, Rating
+from .models import Movie, Category, Actor, Genre, Rating, Reviews
 
 
 class GenreYear:
@@ -21,16 +21,13 @@ class MoviesView(GenreYear, ListView):
     """Movies list"""
     model = Movie
     queryset = Movie.objects.filter(draft=False)
-
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super().get_context_data(*args, **kwargs)
-    #     context['categories'] = Category.objects.all()
-    #     return context
+    paginate_by = 1
 
 
 class MovieDetailView(GenreYear, DetailView):
     """Movie description"""
     model = Movie
+    queryset = Movie.objects.filter(draft=False)
     slug_field = 'url'
 
     def get_context_data(self, **kwargs):
@@ -63,12 +60,19 @@ class ActorView(GenreYear, DetailView):
 
 class FilterMovieView(GenreYear, ListView):
     """Movies filter"""
+    paginate_by = 2
 
     def get_queryset(self):
         queryset = Movie.objects.filter(
             Q(year__in=self.request.GET.getlist('year')) |
-            Q(genres__in=self.request.GET.getlist('genres')))
+            Q(genres__in=self.request.GET.getlist('genres'))).distinct()
         return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['year'] = ''.join([f'year={x}&' for x in self.request.GET.getlist('year')])
+        context['genres'] = ''.join([f'genres={x}&' for x in self.request.GET.getlist('genres')])
+        return context
 
 
 class AddStarRating(View):
