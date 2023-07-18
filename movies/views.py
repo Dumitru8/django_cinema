@@ -1,4 +1,6 @@
+from typing import Any, Dict
 from django.db.models import Q
+from django.db.models.query import QuerySet
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
@@ -97,4 +99,17 @@ class AddStarRating(View):
             return HttpResponse(status=201)
         else:
             return HttpResponse(status=400)
+        
+
+class Search(ListView):
+    """Search films"""
+
+    paginate_by = 2
+    def get_queryset(self):
+        return Movie.objects.filter(title__icontains=self.request.GET.get("q"))
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["q"] = f'q={self.request.GET.get("q")}&'
+        return context
 
