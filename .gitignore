@@ -2,9 +2,7 @@
 .vscode
 .DS_Store
 db.sqlite3
-django_movies/__pycache__/
-movies/__pycache__/
-movies/migrations/
+__pycache__/
 media/
-movies/templatetags/__pycache__/
-
+migrations/
+.mo

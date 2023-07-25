@@ -1,14 +1,15 @@
 from django.contrib import admin
 from django import forms
 from django.utils.safestring import mark_safe
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from modeltranslation.admin import TranslationAdmin
 
 from .models import Category, Genre, Movie, Reviews, RatingStar, Rating, Actor, MovieShots
 
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
-
 
 class MovieAdminForm(forms.ModelForm):
-    description = forms.CharField(label='Описание', widget=CKEditorUploadingWidget())
+    description_ru = forms.CharField(label='Описание', widget=CKEditorUploadingWidget())
+    description_en = forms.CharField(label='Описание', widget=CKEditorUploadingWidget())
 
     class Meta:
         model = Movie
@@ -16,7 +17,7 @@ class MovieAdminForm(forms.ModelForm):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(TranslationAdmin):
     list_display = ('id', 'name', 'url')
     list_display_links = ('name',)
 
@@ -39,7 +40,7 @@ class MovieShotsInline(admin.TabularInline):
 
 
 @admin.register(Movie)
-class MovieAdmin(admin.ModelAdmin):
+class MovieAdmin(TranslationAdmin):
     list_display = ('title', 'category', 'url', 'draft')
     list_filter = ('category', 'year')
     search_fields = ('title', 'category__name')
@@ -109,12 +110,12 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 @admin.register(Genre)
-class ReviewGenre(admin.ModelAdmin):
+class GenreAdmin(TranslationAdmin):
     list_display = ('name', 'url')
 
 
 @admin.register(Actor)
-class ReviewActor(admin.ModelAdmin):
+class ActorAdmin(TranslationAdmin):
     list_display = ('name', 'age', 'get_image')
     readonly_fields = ('get_image',)
 
@@ -125,12 +126,12 @@ class ReviewActor(admin.ModelAdmin):
 
 
 @admin.register(Rating)
-class ReviewRating(admin.ModelAdmin):
+class RatingAdmin(admin.ModelAdmin):
     list_display = ('movie', 'ip')
 
 
 @admin.register(MovieShots)
-class ReviewMovieShots(admin.ModelAdmin):
+class MovieShotsAdmin(TranslationAdmin):
     list_display = ('title', 'movie', 'get_image')
     readonly_fields = ('get_image',)
 
@@ -140,13 +141,6 @@ class ReviewMovieShots(admin.ModelAdmin):
     get_image.short_description = 'Image'
 
 
-# admin.site.register(Category, CategoryAdmin)
-# admin.site.register(Genre)
-# admin.site.register(Movie)
-# admin.site.register(Reviews)
-# admin.site.register(Rating)
-# admin.site.register(Actor)
-# admin.site.register(MovieShots)
 admin.site.register(RatingStar)
 
 admin.site.site_title = 'Django Movies'
